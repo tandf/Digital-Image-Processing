@@ -1,0 +1,31 @@
+\documentclass[a4paper]{article}
+\usepackage{xeCJK}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\setCJKmainfont{STXihei}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 小作业7}
+\author{罗云鹏\ 自64\ 2016011470}
+\maketitle
+
+\textbf{\Large 任务目标}
+\begin{itemize}
+    \item 对左心室进行对齐
+    \item 进行主成分分析
+    \item 通过改变系数，观察前三个主成分的意义
+    \item 对于某个左心室样本，观察不同数目主成分的重建形状
+\end{itemize}
+
+前两个任务目标可以使用给出的代码直接完成。
+
+改变系数，可以发现前三个主成分主要决定了左心室的方向，且每个的系数主成分决定了左心室在某个轴方向上旋转的角度。
+
+使用不同数量的主成分进行重建，其结果差别不大。
+理论上，数目越多其结果越接近原有图像。
+
+\end{document}

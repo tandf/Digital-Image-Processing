@@ -1,0 +1,58 @@
+\documentclass[a4paper]{article}
+\usepackage{xeCJK}
+\usepackage{url}
+\setCJKmainfont{STXihei}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 小作业2}
+\author{罗云鹏 自64 2016011470}
+\maketitle
+
+\section{题目一}
+\subsection{计时结果}
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=2in]{../Q1/result.png}
+    \end{center}
+    \caption{题目一运行结果}
+    \label{fig:Q1-result}
+\end{figure}
+运行结果如图\ref{fig:Q1-result}所示。
+
+容易看出，使用 for 循环和使用向量方法计算时，其速度相差不大，使用向量方法计算时耗时略短。
+而使用 MEX 编程时，运行时间显著较短，但耗时也处于同一个数量级。
+
+\subsection{遇到的问题及解决方法}
+\subsubsection{计时不准确，波动大}
+可能是电脑处于低负荷运行，运算时间受各种因素印象较大。
+采用运行十次求取平均值的方法得到最后结果。
+
+\subsubsection{MEX 编程耗时过长}
+当简单地采用for循环的方法编程时，其运行时间竟然比matlab编程还要长。
+根据问题优化算法后，将运行时间降低。
+
+\section{题目二}
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=2.2in]{../Q2/a.jpg}
+        \includegraphics[width=2.2in]{../Q2/ae.jpg}
+
+        \includegraphics[width=2.2in]{../Q2/b.jpg}
+        \includegraphics[width=2.2in]{../Q2/be.jpg}
+
+        \includegraphics[width=2.2in]{../Q2/c.jpg}
+        \includegraphics[width=2.2in]{../Q2/ce.jpg}
+
+        \includegraphics[width=2.2in]{../Q2/d.jpg}
+        \includegraphics[width=2.2in]{../Q2/de.jpg}
+
+        \includegraphics[width=2.2in]{../Q2/e.jpg}
+        \includegraphics[width=2.2in]{../Q2/ee.jpg}
+    \end{center}
+    \caption{添加噪声前后对比}
+    \label{fig:Q2-result}
+\end{figure}
+添加噪声前后效果如图\ref{fig:Q2-result}所示。
+
+\end{document}

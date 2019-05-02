@@ -1,0 +1,83 @@
+\documentclass[a4paper]{article}
+\usepackage{xeCJK}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\setCJKmainfont{STXihei}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 小作业6}
+\author{罗云鹏\ 自64\ 2016011470}
+\maketitle
+
+\section{中值滤波去除椒盐噪声}
+对图片添加不同比例的椒盐噪声，并使用中值滤波去除。
+噪声比例为 0.01 和 0.05 时，使用$3 \times 3$大小的中值滤波可较好地去除噪声。
+当噪声比例达到 0.1 时，使用$5 \times 5$大小的才能去除噪声。
+效果如fig\ref{fig:salt1} fig\ref{fig:salt2} fig\ref{fig:salt3}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[添加椒盐噪声]{\includegraphics[width=0.45\textwidth]{../salt/salt1.jpg}}
+        \subfigure[中值滤波去除噪声]{\includegraphics[width=0.45\textwidth]{../salt/restoration1.jpg}}
+    \end{center}
+    \caption{噪声比例 0.01}
+    \label{fig:salt1}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[添加椒盐噪声]{\includegraphics[width=0.45\textwidth]{../salt/salt2.jpg}}
+        \subfigure[中值滤波去除噪声]{\includegraphics[width=0.45\textwidth]{../salt/restoration2.jpg}}
+    \end{center}
+    \caption{噪声比例 0.05}
+    \label{fig:salt2}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[添加椒盐噪声]{\includegraphics[width=0.45\textwidth]{../salt/salt3.jpg}}
+        \subfigure[中值滤波去除噪声]{\includegraphics[width=0.45\textwidth]{../salt/restoration3.jpg}}
+    \end{center}
+    \caption{噪声比例 0.1}
+    \label{fig:salt3}
+\end{figure}
+
+\section{人物分割}
+人物分割算法重点在于设计蒙板。
+通过计算某像素中，绿色占三通道颜色值之和的比例，可以判断此像素是否为绿色背景。
+尝试后发现，比例大于0.45则可认为是背景。
+得到的蒙板中，人物部分有很多缺陷，对蒙板进行闭操作，去除背景中杂点，并做开操作，补全人物部分，即可得到较好的结果。
+
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[原图]{\includegraphics[width=0.45\textwidth]{../crop/1crop/00001.jpg}}
+        \subfigure[人物分割]{\includegraphics[width=0.45\textwidth]{../crop/result/1crop/00001.jpg}}
+    \end{center}
+    \caption{00001.jpg}
+    \label{fig:crop1}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[原图]{\includegraphics[width=0.45\textwidth]{../crop/2crop/00096.jpg}}
+        \subfigure[人物分割]{\includegraphics[width=0.45\textwidth]{../crop/result/2crop/00096.jpg}}
+    \end{center}
+    \caption{00096.jpg}
+    \label{fig:crop2}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[原图]{\includegraphics[width=0.45\textwidth]{../crop/3crop/00465.jpg}}
+        \subfigure[人物分割]{\includegraphics[width=0.45\textwidth]{../crop/result/3crop/00465.jpg}}
+    \end{center}
+    \caption{00465.jpg}
+    \label{fig:crop3}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,81 @@
+\documentclass[a4paper]{article}
+\usepackage{xeCJK}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\setCJKmainfont{STXihei}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 大作业1}
+\author{罗云鹏\ 自64\ 2016011470}
+\maketitle
+
+具体操作见代码及注释。
+
+\section{分块dft}
+对图像分成大小为 $32 \times 32$的像素块，并做离散傅里叶变换，提取结果中幅值最高的点。
+注意提取幅值最高点时应排除直流和低频部分。
+
+\section{计算频率图和幅值图}
+由傅里叶变换特性，根据幅值最高点相对于直流点的距离，可估算出脊线频率。
+计算傅里叶变换结果中，幅值最高点的幅值。
+
+对频率图进行低通滤波。
+
+\section{前背景分离}
+根据幅值和脊线频率判断指纹所在位置，得到背景蒙版，将背景区分开。
+
+\section{计算方向图}
+根据幅值最高点相对于直流点的方向，可计算出脊线方向。
+根据傅里叶变换特性，此方向与实际方向垂直。
+将方向转化为复数，便于使用低通滤波器对方向图进行平滑。
+
+对方向图进行低通滤波
+
+\section{使用 Gabor 滤波器增强指纹}
+根据计算得到的方向和频率，对指纹部分图像做滤波，背景部分取0。
+
+\section{算法结果}
+
+\begin{figure}[!htp]
+    \begin{center}
+        \subfigure[原图]{ \includegraphics[width=0.45\textwidth]{../code/img1.png} }
+        \subfigure[频率图]{ \includegraphics[width=0.45\textwidth]{../code/lf1.jpg} }
+        \subfigure[幅值]{ \includegraphics[width=0.45\textwidth]{../code/lm1.jpg} }
+        \subfigure[前背景分离蒙版]{ \includegraphics[width=0.45\textwidth]{../code/mask1.jpg} }
+        \subfigure[方向图]{ \includegraphics[width=0.45\textwidth]{../code/lo1.jpg} }
+        \subfigure[脊线增强结果]{ \includegraphics[width=0.45\textwidth]{../code/filtered1.jpg} }
+    \end{center}
+    \caption{FTIR处理结果}
+    \label{fig:img1}
+\end{figure}
+
+\begin{figure}[!htp]
+    \begin{center}
+        \subfigure[原图]{ \includegraphics[height=0.3\textheight]{../code/img2.png} }
+        \subfigure[频率图]{ \includegraphics[height=0.3\textheight]{../code/lf2.jpg} }
+        \subfigure[幅值]{ \includegraphics[height=0.3\textheight]{../code/lm2.jpg} }
+        \subfigure[前背景分离蒙版]{ \includegraphics[height=0.3\textheight]{../code/mask2.jpg} }
+        \subfigure[方向图]{ \includegraphics[height=0.3\textheight]{../code/lo2.jpg} }
+        \subfigure[脊线增强结果]{ \includegraphics[height=0.3\textheight]{../code/filtered2.jpg} }
+    \end{center}
+    \caption{phone处理结果}
+    \label{fig:img2}
+\end{figure}
+
+\begin{figure}[!htp]
+    \begin{center}
+        \subfigure[原图]{ \includegraphics[width=0.45\textwidth]{../code/img3.png} }
+        \subfigure[频率图]{ \includegraphics[width=0.45\textwidth]{../code/lf3.jpg} }
+        \subfigure[幅值]{ \includegraphics[width=0.45\textwidth]{../code/lm3.jpg} }
+        \subfigure[前背景分离蒙版]{ \includegraphics[width=0.45\textwidth]{../code/mask3.jpg} }
+        \subfigure[方向图]{ \includegraphics[width=0.45\textwidth]{../code/lo3.jpg} }
+        \subfigure[脊线增强结果]{ \includegraphics[width=0.45\textwidth]{../code/filtered3.jpg} }
+    \end{center}
+    \caption{latent处理结果}
+    \label{fig:img2}
+\end{figure}
+
+\end{document}

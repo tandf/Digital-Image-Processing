@@ -1,0 +1,46 @@
+\documentclass[a4paper]{ctexart}
+\pagestyle{plain}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{geometry}
+\geometry{left=1in, right=1in, top=1in, bottom=1in}
+\CTEXsetup[format={\large\bfseries}]{section}
+\CTEXsetup[format={\bfseries}]{subsection}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 综合作业4}
+\author{罗云鹏\ 自64\ 2016011470}
+\maketitle
+
+\section{算法原理}
+对每个 $8\times 8$图像块进行DCT后，再使用Normalization Matrix进行归一化。
+由于其直流分量比较大，对直流分量使用LPC单独编码存储，有助于提高压缩比。
+
+当quality数值较大时，比如取20，得到的交流分量的值正则化后为0，没有需要进行霍夫曼编码的数值，这是matlab会报错。
+在程序中检测待编码数值的个数，如果为0时则不进行霍夫曼编码，直接存储。
+
+\section{结果及分析}
+实验结果如下图所示。其中左为RGB通道分别压缩结果，右为转为YCbCr空间后，Y 通道图像按原始分辨率压缩，CbCr 通道图像缩小一半，分别进行压缩。
+
+不难看出RGB三通道压缩时，图像质量受损较不明显。
+而转到YCbCr空间后压缩，图像的压缩比提高，但图像质量受损明显，且当quality较大时，颜色有失真。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \subfigure[quality=1 rmse:4.7941 ratio:0.29856]{\includegraphics[width=.33\textwidth]{../pic/1rgb.png}}
+        \subfigure[quality=1 rmse:6.2381 ratio:0.12984]{\includegraphics[width=.33\textwidth]{../pic/1ycbcr.png}}
+        \subfigure[quality=5 rmse:8.1274 ratio:0.071585]{\includegraphics[width=.33\textwidth]{../pic/5rgb.png}}
+        \subfigure[quality=5 rmse:11.0815 ratio:0.033019 ]{\includegraphics[width=.33\textwidth]{../pic/5ycbcr.png}}
+        \subfigure[quality=10 rmse:11.1536 ratio:0.038572 ]{\includegraphics[width=.33\textwidth]{../pic/10rgb.png}}
+        \subfigure[quality=10 rmse:16.4155 ratio:0.018884 ]{\includegraphics[width=.33\textwidth]{../pic/10ycbcr.png}}
+        \subfigure[quality=20 rmse:16.7867 ratio:0.021161 ]{\includegraphics[width=.33\textwidth]{../pic/20rgb.png}}
+        \subfigure[quality=20 rmse:26.4023 ratio:0.020331 ]{\includegraphics[width=.33\textwidth]{../pic/20ycbcr.png}}
+    \end{center}
+\end{figure}
+
+\end{document}

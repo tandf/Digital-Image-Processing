@@ -1,0 +1,110 @@
+\documentclass[a4paper]{ctexart}
+\pagestyle{plain}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{geometry}
+\geometry{left=1in, right=1in, top=1in, bottom=1in}
+\CTEXsetup[format={\large\bfseries}]{section}
+\CTEXsetup[format={\bfseries}]{subsection}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 综合作业3}
+\author{罗云鹏\ 自64\ 2016011470}
+\maketitle
+
+\section{要求}
+对给定的射门视频，检测分割足球并追踪轨迹，估计射门球速。
+
+给定的九个视频中，视频0可以使用示例代码完成检测，视频质量高，检测简单，几乎不需要改动代码。
+而剩下的八个视频录制角度、清晰度都不同，需要用其他的方法检测。
+
+检测后发现，视频0帧率为24，检测到的轨迹有明显的四个点一组，中间相隔一定距离的情况。
+据猜测，这是因为视频遭到了压缩，从30帧率压缩到24帧率。
+
+由于这些原因，算法主要针对后八个视频来设计。
+
+\section{算法原理}
+算法原理如下，具体实现见代码。
+其中\textit{ tracking\_basic.m} 为基础任务部分，\textit {tracking.m} 为使用了卡尔曼滤波和自动识别初始点的代码。
+
+\subsection{预处理}
+使用MATLAB自带的 {\textit{vision.ForegroundDetector}} 检测运动物体，效果相比实例代码较好。
+但两个算法都有一个问题：无法区分运动物体是球还是其他物体。
+为了解决这一问题，观察处理结果，不难发现，视频每一帧的部分区域都会检测出运动，这一区域可能是踢球的人，可能是背景中的车辆等等。
+除此之外，当然还会检测出运动的足球。
+两者相比，足球的运动速度快得多，在一个位置不会停留太久，而其他物体则会停留一段时间。
+
+因此，先使用检测器，对视频每一帧做运动物体检测。
+检测得到的二值图像求和，除以帧数以达到归一化的效果。
+对结果取一阈值，实验发现0.1左右即可。
+对于大于阈值的部分，认为是误检测到的物体，其余部分认为是不运动物体或者是快速运动的足球。
+此外，还应当进行一些简单的形态学操作，达到去除噪点等效果。
+由此，可得到一个预处理蒙板。
+
+\subsection{足球初始位置确定}
+从视频第一帧开始，读取一帧，检测其中的运动物体。
+使用预处理蒙板去除非球的部分，在剩下的物体中寻找中心。
+如果使用蒙板后没有物体留下，则读取下一帧检测其中物体，直到寻找到球的为止。
+
+实验发现，算法可较好地定位到球的位置。
+
+\subsection{轨迹追踪}
+与实例代码中相似，对视频每一帧寻找运动物体。
+根据上一次的足球位置信息，去除一定范围外的物体，以及预处理时检测出的非球的运动物体，则得到了这一时刻的球的前景图。
+根据前景图，即可计算出球的中心位置。
+再使用MATLAB提供的卡尔曼滤波器对结果进行矫正，即可得到较为准确的中心位置。
+
+在前景图中进行圆检测，有可能可以检测出足球的大小。
+选取一个视频中可靠性最高的那个检测结果，作为足球的测量半径。
+
+\subsection{速度计算及处理}
+由轨迹追踪，可以得到足球中心点序列。
+通过计算两个中心点之间的欧式距离，根据足球的测量半径，可换算出其真实距离。
+根据视频的帧率，可以计算出瞬时速度。
+由于轨迹追踪并不是完全准确的，使用统计学方法去除其中不可靠数据：
+将相对于速度均值的偏差大于两倍标准差的数据点删除。
+这样，可以得到一个较为准确的速度序列，并可以计算出速度均值和最大值。
+
+\clearpage
+\section{处理结果}
+足球轨迹追踪如图\ref{fig:track}
+\begin{figure}[htp]
+    \begin{center}
+        \includegraphics[width=0.43\textwidth]{../result/track1.png}
+        \includegraphics[width=0.43\textwidth]{../result/track2.png}
+        \includegraphics[width=0.43\textwidth]{../result/track3.png}
+        \includegraphics[width=0.43\textwidth]{../result/track4.png}
+        \includegraphics[width=0.43\textwidth]{../result/track5.png}
+        \includegraphics[width=0.43\textwidth]{../result/track6.png}
+        \includegraphics[width=0.43\textwidth]{../result/track7.png}
+        \includegraphics[width=0.43\textwidth]{../result/track8.png}
+    \end{center}
+    \caption{}
+    \label{fig:track}
+\end{figure}
+
+\clearpage
+
+射门球速分布，计算得到的有效速度数量，平均速度，最大速度结果如图\ref{fig:result}
+
+\begin{figure}[htp]
+    \begin{center}
+        \includegraphics[height=0.18\textheight]{../result/hist1.png}
+        \includegraphics[height=0.18\textheight]{../result/hist2.png}
+        \includegraphics[height=0.18\textheight]{../result/hist3.png}
+        \includegraphics[height=0.18\textheight]{../result/hist4.png}
+        \includegraphics[height=0.18\textheight]{../result/hist5.png}
+        \includegraphics[height=0.18\textheight]{../result/hist6.png}
+        \includegraphics[height=0.18\textheight]{../result/hist7.png}
+        \includegraphics[height=0.18\textheight]{../result/hist8.png}
+    \end{center}
+    \caption{}
+    \label{fig:result}
+\end{figure}
+
+\end{document}

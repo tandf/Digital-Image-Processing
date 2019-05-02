@@ -1,0 +1,77 @@
+\documentclass[a4paper]{article}
+\usepackage{xeCJK}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\setCJKmainfont{STXihei}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 小作业5}
+\author{罗云鹏\ 自64\ 2016011470}
+\maketitle
+
+\section{汽车移动}
+Matlab工具箱中已有运动模糊函数，其原理是生成一个沿着给定方向的均值滤波器。
+为了实现向某一方向运动的效果，将此滤波器从向两边平均改为向一个方向取值做平均。
+具体代码如下
+\begin{lstlisting}
+    h = 2 * fspecial('motion',len * 2,0);
+    h(1: len) = 0;
+\end{lstlisting}
+使中心点以左的滤波器取值为0，调整使其总和约为1。
+
+使用图像处理软件得到汽车区域的mask，将汽车部分图像取出。
+对此部分图像做运动模糊，结果中不为0的部分即为汽车会扫过的区域。
+对原图做运动模糊，将汽车会扫过部分保留，其余部分使用未处理过的原图背景。
+观察真实拍摄的模糊图像，可以看出汽车最后所在位置的图像较为清晰，因此将汽车区域的结果和原图结果求平均，作为最终的结果。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=4in]{../code/carmotion.jpg}
+    \end{center}
+    \caption{汽车运动模拟}
+    \label{fig:carmotion}
+\end{figure}
+
+\section{相机随汽车移动}
+与汽车移动相似，对全图做左向的运动模糊，并将汽车部分保留为原图，即可模拟出相机随着汽车移动的效果。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=4in]{../code/bgmotion.jpg}
+    \end{center}
+    \caption{相机随汽车运动模拟}
+    \label{fig:bgmotion}
+\end{figure}
+
+\section{添加噪声并恢复}
+由于两种模拟移动的处理区域不规则，使用逆滤波或者维纳滤波是很难恢复出原图的。
+多次试验后发现，仅在移动距离很小的时候，才能勉强看出原图的痕迹。
+如果移动距离过大，则恢复结果中几乎看不出原图的痕迹。
+因此，为了完成作业要求，对全图做运动模糊代替局部模糊，用于检验维纳滤波和逆滤波的效果。
+
+使用维纳滤波和逆滤波效果见后图。
+可以看出，在没有噪声时，两种算法效果相差不大。
+当有噪声时，维纳滤波显著好于逆滤波，但如果噪声过强，维纳滤波也不能得到较好的恢复图像。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \subfigure[逆滤波 高斯噪声方差为0]          { \includegraphics[width=0.4\textwidth]{../code/invH0.jpg} }
+        \subfigure[维纳滤波 高斯噪声方差为0]        { \includegraphics[width=0.4\textwidth]{../code/wnr0.jpg} }
+        \subfigure[维纳滤波 高斯噪声方差为0.00001]  { \includegraphics[width=0.4\textwidth]{../code/wnr1e-05.jpg} }
+        \subfigure[逆滤波 高斯噪声方差为0.00001]    { \includegraphics[width=0.4\textwidth]{../code/invH1e-05.jpg} }
+        \subfigure[维纳滤波 高斯噪声方差为0.0001]   { \includegraphics[width=0.4\textwidth]{../code/wnr0.0001.jpg} }
+        \subfigure[逆滤波 高斯噪声方差为0.0001]     { \includegraphics[width=0.4\textwidth]{../code/invH0.0001.jpg} }
+        \subfigure[维纳滤波 高斯噪声方差为0.001]    { \includegraphics[width=0.4\textwidth]{../code/wnr0.001.jpg} }
+        \subfigure[逆滤波 高斯噪声方差为0.001]      { \includegraphics[width=0.4\textwidth]{../code/invH0.001.jpg} }
+        \subfigure[维纳滤波 高斯噪声方差为0.01]     { \includegraphics[width=0.4\textwidth]{../code/wnr0.01.jpg} }
+        \subfigure[逆滤波 高斯噪声方差为0.01]       { \includegraphics[width=0.4\textwidth]{../code/invH0.01.jpg} }
+        \subfigure[维纳滤波 高斯噪声方差为0.1]      { \includegraphics[width=0.4\textwidth]{../code/wnr0.1.jpg} }
+        \subfigure[逆滤波 高斯噪声方差为0.1]        { \includegraphics[width=0.4\textwidth]{../code/invH0.1.jpg} }
+    \end{center}
+    \caption{不同程度噪声滤波结果}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,79 @@
+\documentclass[a4paper]{article}
+\usepackage{xeCJK}
+\usepackage{url}
+\setCJKmainfont{STXihei}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 小作业3}
+\author{罗云鹏 自64 2016011470}
+\maketitle
+
+\section{局部统计量的高效计算}
+对于过程的解释见源代码文件(./Q1/ex312\_LocalEnhance.m)。
+
+在原有代码中，局部统计量使用的是nlfilter函数计算的，这个方法的时间花费极长。
+
+考虑局部平均值的计算过程，其计算重点在于求得区域内像素的和。
+使用积分图像方法可大大加快这一过程。
+在查找资料的过程中，发现matlab中有现有的积分图像函数，且有函数针对积分图像的计算结果进行滤波操作。
+利用这两个函数可快速计算某像素的局部平均值，如图\ref{fig:local_mean}，计算速度大大提高，且计算结果相同。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=4in]{../Q1/local_mean.png}
+    \end{center}
+    \caption{计算局部平均值}
+    \label{fig:local_mean}
+\end{figure}
+
+计算局部方差时，可利用工具箱中现有的函数计算，如图\ref{fig:local_std}，所示，其计算速度大大加快，且计算结果相同。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=4in]{../Q1/local_std.png}
+    \end{center}
+    \caption{计算局部方差}
+    \label{fig:local_std}
+\end{figure}
+
+\section{模拟大光圈}
+简单来说，大光圈的效果是使得某一景深的物体清晰地显示出来，其他景深的物体模糊化。
+要实现这一效果，一个朴素的方法就是，选定某一区域图像保留，其余部分进行高斯模糊处理。
+
+\subsection{算法思路}
+先将图片二值化，并用鼠标选定对焦目标范围。
+对范围内的二值化图形做闭运算，获得一个内部封闭的掩模。
+将图片做高斯模糊处理，并将掩模内的部分用原图替代，即可得到处理结果，如图\ref{fig:bokeh}。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=2.2in]{../Q2/1.jpg}
+        \includegraphics[width=2.2in]{../Q2/1bokeh.jpg}
+        \\\vspace{0.1in}
+        \includegraphics[width=2.2in]{../Q2/2.jpg}
+        \includegraphics[width=2.2in]{../Q2/2bokeh.jpg}
+        \\\vspace{0.1in}
+        \includegraphics[width=2.2in]{../Q2/3.jpg}
+        \includegraphics[width=2.2in]{../Q2/3bokeh.jpg}
+        \\\vspace{0.1in}
+        \includegraphics[width=2.2in]{../Q2/4.jpg}
+        \includegraphics[width=2.2in]{../Q2/4bokeh.jpg}
+        \\\vspace{0.1in}
+        \includegraphics[width=2.2in]{../Q2/5.jpg}
+        \includegraphics[width=2.2in]{../Q2/5bokeh.jpg}
+    \end{center}
+    \caption{拍摄得到的大光圈效果（左）与部分模糊处理（右）}
+    \label{fig:bokeh}
+\end{figure}
+
+\subsection{不足与可能的改进方法}
+此方法中采用掩模较为粗糙，对焦图像与背景之间分割效果不佳。
+可考虑使用边缘检测算法获取物体范围，或者用其他的方法将背景与对焦物体区分开。
+
+背景中采用的模糊是无区别的均匀模糊，但是实际上，大光圈得到的模糊效果是不均匀的。
+不难看出，景深与对焦物体相差越大的，模糊程度越高。
+可以改进模糊算法，使得离对焦物体越近的位置模糊程度越低，离对焦物体越远的位置模糊程度越高，这样可以粗略地模拟出真实效果。
+也可以手动选定不同区域，分别调节模糊程度。
+
+\end{document}

@@ -1,0 +1,161 @@
+\documentclass[a4paper]{ctexart}
+\pagestyle{plain}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\setCJKmainfont{STXihei}
+\usepackage{geometry}
+\geometry{left=1.5in, right=1.5in, top=1.5in, bottom=1.5in}
+\CTEXsetup[format={\large\bfseries}]{section}
+\CTEXsetup[format={\bfseries}]{subsection}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 综合作业2}
+\author{罗云鹏\ 自64\ 2016011470}
+\maketitle
+\section{实验要求}
+此次综合作业要求从冠状动脉的增强图像中提取中心线，主要包含以下步骤：
+
+\begin{enumerate}
+\item 图像二值化
+\item 空洞填充
+\item 中心线提取（图像细化）
+\item 分叉点、端点检测
+\item 断连分支重连、孤立分支删除
+\item 中心线分支模型构建
+\end{enumerate}
+
+\section{图像二值化}
+此步骤在题目给出的 coronary\_refine.m 中已经完成，据测试效果较好，若改变其阈值$0.5 * intmax('uint16')$不会有明显的改进，故未作改动。
+
+\section{空洞填充}
+给出的冠状动脉增强图像数据中，凭肉眼观察很难看出有空洞存在。
+使用图像闭操作可去除潜在的空洞。
+
+在matlab工具箱中，有现成的函数$imclose()$可使用。
+
+图像二值化及填补空洞结果如图\ref{fig:1}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[ours\_054\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/01.png}}
+        \subfigure[ours\_066\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/07.png}}
+    \end{center}
+    \caption{bin and fill}
+    \label{fig:1}
+\end{figure}
+
+\clearpage
+
+\section{中心线提取（图像细化）}
+在中心线提取这一步中，可先提取出冠动脉二值图像的骨架作为中心线。
+
+在matlab工具箱中，有现成的函数$bwskel()$可使用。
+
+图像细化结果与填补空洞后图像对比如图\ref{fig:2}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[ours\_054\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/02.png}}
+        \subfigure[ours\_066\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/08.png}}
+    \end{center}
+    \caption{fill and thin}
+    \label{fig:2}
+\end{figure}
+
+\clearpage
+
+\section{分叉点、端点检测}
+在matlab工具箱中，有现成的函数$bwmorph3$可用于提取分支点和端点。
+
+图像端点与填补空洞后图像对比如图\ref{fig:3}，
+图像分叉点与填补空洞后图像对比如图\ref{fig:4}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[ours\_054\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/03.png}}
+        \subfigure[ours\_066\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/09.png}}
+    \end{center}
+    \caption{fill and end points}
+    \label{fig:3}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[ours\_054\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/04.png}}
+        \subfigure[ours\_066\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/10.png}}
+    \end{center}
+    \caption{fill and bifucation}
+    \label{fig:4}
+\end{figure}
+
+\clearpage
+
+\section{断连分支重连、孤立分支删除}
+\subsection{断连分支重连}
+细化后的图像中，存在一些断开的分支。
+对于端点接近的分支，可以将端点连接起来，达到断连分支重连的效果。
+为防止同一个端点连接多个端点，应寻找所有未连通的端点中距离最近的两个相连，并重新计算端点。
+若最近的两个端点距离过大，则说明所有应当连上的分支都连上了，则停止这一循环过程。
+
+\subsection{孤立分支删除}
+使用matlab工具箱提供的$bwlabeln()$函数区分连通域，将整个图像划分为若干个相互连通的中心线点集。
+判断各个点集的大小，将过小的点集删除。
+
+\subsection{短分支删除}
+中心线中，有部分明显过短的分支，可认为是噪声。
+为了将这些分支删除，将图中的分叉点删除，并区分各个连通域，每个连通域都是一个无分叉的分支。
+与孤立分支删除中操作类似，判断各个分支的长度，将过短的分支删除掉即可。
+
+连接孤立分支并删除部分分支后图像，与填补空洞后图像对比如图\ref{fig:5}
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[ours\_054\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/05.png}}
+        \subfigure[ours\_066\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/11.png}}
+    \end{center}
+    \caption{thin and connected branches}
+    \label{fig:5}
+\end{figure}
+
+\clearpage
+
+\section{中心线分支模型构建}
+经过以上步骤处理过的中心线，删去分叉点，可得到各个分支。
+将之前得到的分叉点进行处理，相距较近的分叉点坐标求平均，得到一个唯一的分叉点。
+对于每个分支，若有分叉点与其端点相距比较近，则将这个分叉点加入其中。
+
+取每个分支的一个端点，作为分支的起点。
+其相邻的26邻域内，属于此分支的下一个点作为分支的第二个点，依此类推，可得到按顺序排列的点集。
+此点集即为所求结果，可用于绘制曲线图。
+
+各分支散点图与曲线图如图\ref{fig:6}所示
+
+\begin{figure}[H]
+    \begin{center}
+        \subfigure[ours\_054\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/06.png}}
+        \subfigure[ours\_066\_c1.mha]{
+            \includegraphics[width=\textwidth]{../pic/12.png}}
+    \end{center}
+    \caption{branch points and line}
+    \label{fig:6}
+\end{figure}
+
+\clearpage
+
+\end{document}

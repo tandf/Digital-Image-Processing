@@ -1,0 +1,27 @@
+\documentclass[a4paper]{article}
+\usepackage{xeCJK}
+\usepackage{url}
+\setCJKmainfont{STXihei}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 小作业4}
+\author{罗云鹏 自64 2016011470}
+\maketitle
+
+\section{2D DFT 函数的实现}
+二维平面的傅里叶变换，即先对图像每行做一维傅里叶变换，再对每列做一维傅里叶变换。
+具体实现见代码。
+
+\section{三种图像的生成与图形化界面显示}
+使用图像化界面，先获取输入的图像种类，并按照图像种类显示各参数的滑动条。
+比如正弦波的参数有角度、相位等。
+根据用户的输入参数，生成图像并显示。
+当用户完成对参数的设置后，点击dft按钮，对图像进行傅里叶变换，并将结果显示在窗口中。
+
+\section{附件说明}
+\paragraph{code/dft2.m} 2D DFT 函数
+\paragraph{code/code.m} 生成不同参数的三种图形的代码
+\paragraph{code/window.m 与 window.fig} 图形化界面的代码
+
+\end{document}

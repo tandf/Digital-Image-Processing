@@ -1,0 +1,52 @@
+\documentclass[a4paper]{article}
+\usepackage{xeCJK}
+\usepackage{url}
+\setCJKmainfont{STXihei}
+
+\begin{document}
+\bibliographystyle{unsrt}
+\title{数字图像处理\quad 小作业1 \\
+\Huge 人脸识别系统
+}
+\author{罗云鹏 自64 2016011470}
+\maketitle
+\nocite{cite1}\nocite{cite2}\nocite{cite3}
+流程图如图\ref{fig:p1}所示。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=\textwidth]{数图作业-流程图.png}
+    \end{center}
+    \caption{流程图}
+    \label{fig:p1}
+\end{figure}
+
+人脸识别系统的系统框图如图\ref{fig:p2}所示。
+
+\begin{figure}[!htp]
+    \begin{center}
+        \includegraphics[width=\textwidth]{数图作业-系统框图.png}
+    \end{center}
+    \caption{系统框图}
+    \label{fig:p2}
+\end{figure}
+
+\section{人脸定位}
+人脸定位模块输入一张图片，可定位出其中的人脸位置。
+
+常见的方法如OpenCV中的haar分类器，基于 Viola-Jones 算法，但准确度和召回率曲线较差。
+也有其他方法，如微软亚洲研究院14年提出的一种算法，同时完成人脸定位和特征点识别两个功能，提高了效率。
+
+\section{特征点定位}
+特征点定位模块输入待识别的人脸，输出其中的特征点。
+
+\section{人脸对齐}
+输入待识别的人脸及其中的特征点，根据特征点的位置做变形，得到方向正确的人脸。
+
+\section{人脸校验及人脸识别}
+人脸校验和人脸识别模块都输入带有特征点的人脸图像，输出识别结果。
+其中，人脸校验功能判断输出的人脸图像是否为某人，而人脸识别功能判断出图像中的是谁。
+
+\bibliography{Report}
+
+\end{document}
